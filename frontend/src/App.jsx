@@ -7,6 +7,7 @@ import Signup from './components/SignUp';
 import Userlogin from './components/Userlogin';
 import Usersignup from './components/Usersignup';
 import Dash from './components/Dash';
+import Userdash from './components/Userdash';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/user-login" element={<Userlogin />} />
         <Route path="/user-signup" element={<Usersignup />} />
+        <Route path="/user-dashboard" element={<Userdash/>}/>
         <Route path="/db-dash" element={<Dash />} />
       </Routes>
     </Router>

@@ -23,6 +23,10 @@ export default function Dash() {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [newPrice, setNewPrice] = useState('');
+  const [newTimings, setNewTimings] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+  const [editTimings, setEditTimings] = useState('');
   
   const fetchTempleRep = async () => {
     try {
@@ -58,16 +62,23 @@ export default function Dash() {
   const addService = async () => {
     if (newService.trim() !== '' && newDescription.trim() !== '') {
       try {
-        const response = await axios.post(`${API_URL}/services`, { service: newService, description: newDescription });
+        const response = await axios.post(`${API_URL}/services`, {
+          service: newService,
+          description: newDescription,
+          price: newPrice,
+          timings: newTimings
+        });
         setServices([...services, response.data]);
         setNewService('');
         setNewDescription('');
+        setNewPrice('');
+        setNewTimings('');
       } catch (error) {
         console.error('Error adding service:', error);
       }
     }
   };
-  
+
   const removeService = async (id) => {
     try {
       await axios.delete(`${API_URL}/services/${id}`);
@@ -77,11 +88,14 @@ export default function Dash() {
     }
   };
   
-  const startEditing = (service) => {
-    setEditingId(service._id);
-    setEditName(service.service);
-    setEditDescription(service.description);
-  };
+ const startEditing = (service) => {
+  setEditingId(service._id);
+  setEditName(service.service);
+  setEditDescription(service.description);
+  setEditPrice(service.price);
+  setEditTimings(service.timings);
+};
+
   
   const cancelEditing = () => {
     setEditingId(null);
@@ -91,7 +105,12 @@ export default function Dash() {
   
   const saveEdit = async (id) => {
     try {
-      const response = await axios.put(`${API_URL}/services/${id}`, { service: editName, description: editDescription });
+      const response = await axios.put(`${API_URL}/services/${id}`, {
+        service: editName,
+        description: editDescription,
+        price: editPrice,
+        timings: editTimings
+      });
       setServices(services.map(service => 
         service._id === id ? response.data : service
       ));
@@ -316,90 +335,118 @@ export default function Dash() {
             <h2 className='infoooo'>Here you can view, add, edit and remove your Temple Services, Donation Schemes, Announcements and Contact Info as a temple representative for the temple</h2>
           </>
         );
-      case 'Services':
-        return (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Welcome Sashidhar Reddy</h2>
-            <div className="mb-4">
-              <input
-                type="text"
-                className="border rounded p-2 mr-2"
-                placeholder="Enter new service"
-                value={newService}
-                onChange={(e) => setNewService(e.target.value)}
-              />
-              <input
-                type="text"
-                className="border rounded p-2 mr-2"
-                placeholder="Enter service description"
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-              />
-              <button
-                className="bg-orange-500 text-white px-4 py-2 rounded"
-                onClick={addService}
-              >
-                Add Service
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {services.map((service) => (
-                <div key={service._id} className="bg-gray-200 rounded-lg p-4">
-                  <div className="bg-gray-500 rounded-lg p-4 mb-2">
-                  <img src="/pictures/pngaaa.com-1646422.png" alt="Service" className="w-16 h-16 mx-auto mb-2" />
+        case 'Services':
+          return (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Welcome Sashidhar Reddy</h2>
+              <div className="mb-4">
+                <input
+                  type="text"
+                  className="border rounded p-2 mr-2 mb-2"
+                  placeholder="Enter new darshan"
+                  value={newService}
+                  onChange={(e) => setNewService(e.target.value)}
+                />
+                <input
+                  type="text"
+                  className="border rounded p-2 mr-2 mb-2"
+                  placeholder="Enter darshan description"
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                />
+                <input
+                  type="number"
+                  className="border rounded p-2 mr-2 mb-2"
+                  placeholder="Enter price"
+                  value={newPrice}
+                  onChange={(e) => setNewPrice(e.target.value)}
+                />
+                <input
+                  type="text"
+                  className="border rounded p-2 mr-2 mb-2"
+                  placeholder="Enter timings"
+                  value={newTimings}
+                  onChange={(e) => setNewTimings(e.target.value)}
+                />
+                <button
+                  className="bg-orange-500 text-white px-4 py-2 rounded"
+                  onClick={addService}
+                >
+                  Add Service
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {services.map((service) => (
+                  <div key={service._id} className="bg-gray-200 rounded-lg p-4">
+                    <div className="bg-gray-500 rounded-lg p-4 mb-2">
+                      <img src="/pictures/pngaaa.com-1646422.png" alt="Service" className="w-16 h-16 mx-auto mb-2" />
+                    </div>
+                    {editingId === service._id ? (
+                      <>
+                        <input 
+                          type="text" 
+                          className="border rounded p-2 mb-2 w-full" 
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                        />
+                        <input 
+                          type="text" 
+                          className="border rounded p-2 mb-2 w-full" 
+                          value={editDescription}
+                          onChange={(e) => setEditDescription(e.target.value)}
+                        />
+                        <input 
+                          type="number" 
+                          className="border rounded p-2 mb-2 w-full" 
+                          value={editPrice}
+                          onChange={(e) => setEditPrice(e.target.value)}
+                        />
+                        <input 
+                          type="text" 
+                          className="border rounded p-2 mb-2 w-full" 
+                          value={editTimings}
+                          onChange={(e) => setEditTimings(e.target.value)}
+                        />
+                        <button 
+                          className="bg-green-500 text-white px-2 py-1 rounded mr-2" 
+                          onClick={() => saveEdit(service._id)}
+                        >
+                          Save
+                        </button>
+                        <button 
+                          className="bg-gray-500 text-white px-2 py-1 rounded" 
+                          onClick={cancelEditing}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <h3 className="font-bold">{service.service}</h3>
+                        <p className="text-sm">{service.description}</p>
+                        <p className="text-sm">Price: ₹{service.price}</p>
+                        <p className="text-sm">Timings: {service.timings}</p>
+                        <div className="mt-2">
+                          <button
+                            className="bg-red-500 text-white px-2 py-1 rounded mr-2"
+                            onClick={() => removeService(service._id)}
+                          >
+                            Remove
+                          </button>
+                          <button
+                            className="bg-yellow-500 text-white px-2 py-1 rounded"
+                            onClick={() => startEditing(service)}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
-                  {editingId === service._id ? (
-                    <>
-                      <input 
-                        type="text" 
-                        className="border rounded p-2 mb-2 w-full" 
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                      />
-                      <input 
-                        type="text" 
-                        className="border rounded p-2 mb-2 w-full" 
-                        value={editDescription}
-                        onChange={(e) => setEditDescription(e.target.value)}
-                      />
-                      <button 
-                        className="bg-green-500 text-white px-2 py-1 rounded mr-2" 
-                        onClick={() => saveEdit(service._id)}
-                      >
-                        Save
-                      </button>
-                      <button 
-                        className="bg-gray-500 text-white px-2 py-1 rounded" 
-                        onClick={cancelEditing}
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <h3 className="font-bold">{service.service}</h3>
-                      <p className="text-sm">{service.description}</p>
-                      <div className="mt-2">
-                        <button
-                          className="bg-red-500 text-white px-2 py-1 rounded mr-2"
-                          onClick={() => removeService(service._id)}
-                        >
-                          Remove
-                        </button>
-                        <button
-                          className="bg-yellow-500 text-white px-2 py-1 rounded"
-                          onClick={() => startEditing(service)}
-                        >
-                          Edit
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
         case 'Donations':
   return (
     <div>
@@ -678,7 +725,7 @@ export default function Dash() {
 </header>
 
       <div className="flex flex-1">
-        <div className="w-1/4 bg-gray-100 p-4">
+        <div className="w-[250px] bg-gray-100 p-4">
           <nav>
             <ul className="space-y-2">
               {['Dashboard', 'Services', 'Donations', 'Visitors Stats', 'Announcements', 'Contact info'].map((item) => (

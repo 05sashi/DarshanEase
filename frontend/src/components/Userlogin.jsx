@@ -1,41 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import "../App.css";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../App.css';
 import axios from 'axios';
 
 export default function Userlogin() {
-  const [users, setUsers] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('http://localhost:5500/users');
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
-  const checkUserEmail = () => {
-    return users.some(user => user.email === email);
-  };
-
-  const checkUserPass = () => {
-    return users.some(user => user.password === password);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (checkUserEmail() && checkUserPass()) {
-      alert("Valid Credentials");
-    } else {
-      alert("Please check your credentials");
+    try {
+      const response = await axios.post('http://localhost:5500/userlogin', { email, password });
+      alert(response.data.message);
+      const usersResponse = await axios.get('http://localhost:5500/users');
+      const users = usersResponse.data;
+      const loggedInUser = users.find(user => user.email === email);
+      
+      if (loggedInUser) {
+        localStorage.setItem('userName', loggedInUser.name);
+        navigate('/user-dashboard'); // Assuming you have a user dashboard route
+      } else {
+        alert("User not found.");
+      }
+    } catch (error) {
+      alert("Login failed. Please check your credentials.");
     }
   };
 
@@ -52,12 +41,8 @@ export default function Userlogin() {
             <p className="mb-0 ms-2">Darshan Ease</p>
           </div>
           <div className="text-end">
-          <button type="button" className="btn btn-primary me-2" onClick={()=>{
-            navigate('/db-login')
-          }}>Login as Representative</button>
-          <button type="button" className="btn btn-primary me-2" onClick={()=>{
-            navigate('/login')
-          }}>Login as Admin</button>
+            <button type="button" className="btn btn-primary me-2" onClick={() => navigate('/db-login')}>Login as Representative</button>
+            <button type="button" className="btn btn-primary me-2" onClick={() => navigate('/login')}>Login as Admin</button>
             <button type="button" className="btn btn-primary" onClick={switchToSignup}>Sign-up</button>
           </div>
         </header>
@@ -83,7 +68,7 @@ export default function Userlogin() {
 
           <div className="col-md-10 mx-auto col-lg-5 mr-0">
             <form className="p-4 p-md-5 border rounded-3 custom-bg-color" onSubmit={handleSubmit}>
-              <h2 className="text-center fw-bold login-heading">User Login</h2>
+              <h2 className="text-center fw-bold display-6 login-heading mb-3">User Login</h2>
               <hr />
               <div className="form-floating mb-3">
                 <input

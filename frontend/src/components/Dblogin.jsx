@@ -66,7 +66,7 @@ const handleSubmit = async (e) => {
           
           <div className="col-md-10 mx-auto col-lg-5 mr-0">
             <form className="p-4 p-md-5 border rounded-3 custom-bg-color" onSubmit={handleSubmit}>
-              <h2 className="text-center fw-bold login-heading">Temple Administrative Login</h2>
+              <h2 className="text-center fw-bold display-6 login-heading mb-3">Temple Administrative Login</h2>
               <hr />
               <div className="form-floating mb-3">
                 <input 

@@ -69,7 +69,7 @@ export default function Dbsignup() {
         <div className="row align-items-center g-lg-5 py-5 mx-3 my-0">
           <div className="col-md-10 mx-auto col-lg-5 mr-0">
             <form className="p-4 p-md-5 border rounded-3 custom-bg-color" onSubmit={handlesignup}>
-              <h2 className="text-center fw-bold login-heading">Temple Administrative Singup</h2>
+            <h2 className="text-center fw-bold display-6 login-heading mb-3">Temple Administrative Signup</h2>
               <hr />
               <div className="form-floating mb-3">
                 <input
