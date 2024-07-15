@@ -7,26 +7,37 @@ export default function Dblogin() {
   const [templeReps, setTempleReps] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [templeName, setTempleName] = useState("");
+  const [availableTemples, setAvailableTemples] = useState([]);
   const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post('http://localhost:5500/templelogin', { email, password });
-    alert(response.data.message);
-    const tempRepsResponse = await axios.get('http://localhost:5500/templereps');
-    const templeReps = tempRepsResponse.data;
-    const loggedInRep = templeReps.find(rep => rep.email === email);
-    
-    if (loggedInRep) {
-      localStorage.setItem('templeRepName', loggedInRep.name);
-      navigate('/db-dash');
-    } else {
-      alert("Temple representative not found.");
+  useEffect(() => {
+    fetchAvailableTemples();
+  }, []);
+
+  const fetchAvailableTemples = async () => {
+    try {
+      const response = await axios.get('http://localhost:5500/availableTemples');
+      setAvailableTemples(response.data);
+    } catch (error) {
+      console.error('Error fetching available temples:', error);
     }
-  } catch (error) {
-  }
-};
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5500/templelogin', { email, password, templeName });
+      alert(response.data.message);
+      if (response.data.user) {
+        localStorage.setItem('templeRepName', response.data.user.name);
+        localStorage.setItem('templeName', response.data.user.tname);
+        navigate('/db-dash');
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "An error occurred");
+    }
+  };
 
   const switchToSignup = () => {
     navigate('/db-signup');
@@ -65,9 +76,9 @@ const handleSubmit = async (e) => {
           </div>
           
           <div className="col-md-10 mx-auto col-lg-5 mr-0">
-            <form className="p-4 p-md-5 border rounded-3 custom-bg-color" onSubmit={handleSubmit}>
-              <h2 className="text-center fw-bold display-6 login-heading mb-3">Temple Administrative Login</h2>
-              <hr />
+          <form className="p-4 p-md-5 border rounded-3 custom-bg-color" onSubmit={handleSubmit}>
+        <h2 className="text-center fw-bold display-6 login-heading mb-3">Temple Administrative Login</h2>
+        <hr />
               <div className="form-floating mb-3">
                 <input 
                   type="email" 

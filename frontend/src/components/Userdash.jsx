@@ -13,6 +13,16 @@ export default function Userdash() {
   const [showCart, setShowCart] = useState(false);
   const [donations, setDonations] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
+  const [contactInfos, setContactInfos] = useState([]);
+
+const fetchContactInfos = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/contacts`);
+    setContactInfos(response.data);
+  } catch (error) {
+    console.error('Error fetching contact infos:', error);
+  }
+};
   
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem('cart');
@@ -55,8 +65,23 @@ export default function Userdash() {
   useEffect(() => {
     if (selectedTemple) {
       fetchServices();
+      fetchDonations();
+      fetchAnnouncements();
+      fetchContactInfos();
     }
   }, [selectedTemple]);
+  const renderContactInfo = () => (
+    <div className="mt-8">
+      <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
+      {contactInfos.map(contact => (
+        <div key={contact._id} className="mb-4 p-4 border rounded bg-white">
+          <p><strong>Email:</strong> {contact.email}</p>
+          <p><strong>Mobile:</strong> {contact.mobile}</p>
+          <p><strong>Timings:</strong> {contact.timings}</p>
+        </div>
+      ))}
+    </div>
+  );
 
   const fetchServices = async () => {
     try {
@@ -185,6 +210,7 @@ export default function Userdash() {
       </div>
       {renderDonations()}
       {renderAnnouncements()}
+      {renderContactInfo()}
     </div>
   );
 

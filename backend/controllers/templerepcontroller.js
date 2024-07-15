@@ -42,3 +42,11 @@ exports.passcheck = async (req, res) => {
 }
 
 
+exports.getAvailableTemples = async (req, res) => {
+    try {
+        const temples = await Templerep.distinct('tname');
+        res.json(temples);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
