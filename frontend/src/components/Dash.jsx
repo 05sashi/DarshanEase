@@ -11,6 +11,8 @@ export default function Dash() {
 
   const [userName, setUserName] = useState('Sashi'); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showServiceForm, setShowServiceForm] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -336,117 +338,164 @@ export default function Dash() {
           </>
         );
         case 'Services':
-          return (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Welcome Sashidhar Reddy</h2>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  className="border rounded p-2 mr-2 mb-2"
-                  placeholder="Enter new darshan"
-                  value={newService}
-                  onChange={(e) => setNewService(e.target.value)}
-                />
-                <input
-                  type="text"
-                  className="border rounded p-2 mr-2 mb-2"
-                  placeholder="Enter darshan description"
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                />
-                <input
-                  type="number"
-                  className="border rounded p-2 mr-2 mb-2"
-                  placeholder="Enter price"
-                  value={newPrice}
-                  onChange={(e) => setNewPrice(e.target.value)}
-                />
-                <input
-                  type="text"
-                  className="border rounded p-2 mr-2 mb-2"
-                  placeholder="Enter timings"
-                  value={newTimings}
-                  onChange={(e) => setNewTimings(e.target.value)}
-                />
-                <button
-                  className="bg-orange-500 text-white px-4 py-2 rounded"
-                  onClick={addService}
-                >
-                  Add Service
-                </button>
+  return (
+    <div>
+      <button
+  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mb-4"
+  onClick={() => setShowServiceForm(!showServiceForm)}
+>
+  {showServiceForm ? 'View Services' : 'Create Service'}
+</button>
+{showServiceForm ? (
+  <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <h3 className="text-xl font-semibold mb-4">Create New Service</h3>
+    <div className="mb-4">
+      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="serviceName">
+        Darshan Name
+      </label>
+      <input
+        id="serviceName"
+        type="text"
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        placeholder="Enter new darshan"
+        value={newService}
+        onChange={(e) => setNewService(e.target.value)}
+      />
+    </div>
+    <div className="mb-4">
+      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="serviceDescription">
+        Description
+      </label>
+      <textarea
+        id="serviceDescription"
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        placeholder="Enter darshan description"
+        value={newDescription}
+        onChange={(e) => setNewDescription(e.target.value)}
+        rows="3"
+      />
+    </div>
+    <div className="mb-4 flex">
+      <div className="w-1/2 mr-2">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="servicePrice">
+          Price (₹)
+        </label>
+        <input
+          id="servicePrice"
+          type="number"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Enter price"
+          value={newPrice}
+          onChange={(e) => setNewPrice(e.target.value)}
+        />
+      </div>
+      <div className="w-1/2 ml-2">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="serviceTimings">
+          Timings
+        </label>
+        <input
+          id="serviceTimings"
+          type="text"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Enter timings"
+          value={newTimings}
+          onChange={(e) => setNewTimings(e.target.value)}
+        />
+      </div>
+    </div>
+    <div className="flex items-center justify-between">
+      <button
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => {
+          addService();
+          setShowServiceForm(false);
+        }}
+      >
+        Add Service
+      </button>
+      <button
+        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={() => setShowServiceForm(false)}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+) : (
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {services.map((service) => (
+            <div key={service._id} className="bg-gray-200 rounded-lg p-4">
+              <div className="bg-gray-500 rounded-lg p-4 mb-2">
+                <img src="/pictures/pngaaa.com-1646422.png" alt="Service" className="w-16 h-16 mx-auto mb-2" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {services.map((service) => (
-                  <div key={service._id} className="bg-gray-200 rounded-lg p-4">
-                    <div className="bg-gray-500 rounded-lg p-4 mb-2">
-                      <img src="/pictures/pngaaa.com-1646422.png" alt="Service" className="w-16 h-16 mx-auto mb-2" />
-                    </div>
-                    {editingId === service._id ? (
-                      <>
-                        <input 
-                          type="text" 
-                          className="border rounded p-2 mb-2 w-full" 
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                        />
-                        <input 
-                          type="text" 
-                          className="border rounded p-2 mb-2 w-full" 
-                          value={editDescription}
-                          onChange={(e) => setEditDescription(e.target.value)}
-                        />
-                        <input 
-                          type="number" 
-                          className="border rounded p-2 mb-2 w-full" 
-                          value={editPrice}
-                          onChange={(e) => setEditPrice(e.target.value)}
-                        />
-                        <input 
-                          type="text" 
-                          className="border rounded p-2 mb-2 w-full" 
-                          value={editTimings}
-                          onChange={(e) => setEditTimings(e.target.value)}
-                        />
-                        <button 
-                          className="bg-green-500 text-white px-2 py-1 rounded mr-2" 
-                          onClick={() => saveEdit(service._id)}
-                        >
-                          Save
-                        </button>
-                        <button 
-                          className="bg-gray-500 text-white px-2 py-1 rounded" 
-                          onClick={cancelEditing}
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <h3 className="font-bold">{service.service}</h3>
-                        <p className="text-sm">{service.description}</p>
-                        <p className="text-sm">Price: ₹{service.price}</p>
-                        <p className="text-sm">Timings: {service.timings}</p>
-                        <div className="mt-2">
-                          <button
-                            className="bg-red-500 text-white px-2 py-1 rounded mr-2"
-                            onClick={() => removeService(service._id)}
-                          >
-                            Remove
-                          </button>
-                          <button
-                            className="bg-yellow-500 text-white px-2 py-1 rounded"
-                            onClick={() => startEditing(service)}
-                          >
-                            Edit
-                          </button>
-                        </div>
-                      </>
-                    )}
+              {editingId === service._id ? (
+                <>
+                  <input 
+                    type="text" 
+                    className="border rounded p-2 mb-2 w-full" 
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
+                  <input 
+                    type="text" 
+                    className="border rounded p-2 mb-2 w-full" 
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                  />
+                  <input 
+                    type="number" 
+                    className="border rounded p-2 mb-2 w-full" 
+                    value={editPrice}
+                    onChange={(e) => setEditPrice(e.target.value)}
+                  />
+                  <input 
+                    type="text" 
+                    className="border rounded p-2 mb-2 w-full" 
+                    value={editTimings}
+                    onChange={(e) => setEditTimings(e.target.value)}
+                  />
+                  <button 
+                    className="bg-green-500 text-white px-2 py-1 rounded mr-2" 
+                    onClick={() => saveEdit(service._id)}
+                  >
+                    Save
+                  </button>
+                  <button 
+                    className="bg-gray-500 text-white px-2 py-1 rounded" 
+                    onClick={cancelEditing}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h3 className="font-bold">{service.service}</h3>
+                  <p className="text-sm">{service.description}</p>
+                  <p className="text-sm">Price: ₹{service.price}</p>
+                  <p className="text-sm">Timings: {service.timings}</p>
+                  <div className="mt-2">
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded mr-2"
+                      onClick={() => removeService(service._id)}
+                    >
+                      Remove
+                    </button>
+                    <button
+                      className="bg-yellow-500 text-white px-2 py-1 rounded"
+                      onClick={() => startEditing(service)}
+                    >
+                      Edit
+                    </button>
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </div>
-          );
+          ))}
+        </div>
+      )}
+    </div>
+  );
         case 'Donations':
   return (
     <div>
@@ -552,81 +601,133 @@ export default function Dash() {
           </div>
         );
         case 'Contact info':
-  return (
-    <div className="bg-white shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Add New Contact Info</h3>
-        {['email', 'mobile', 'timings'].map((field) => (
-          <input
-            key={field}
-            type="text"
-            className="border rounded p-2 mb-2 mr-2"
-            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-            value={newContactInfo[field]}
-            onChange={(e) => handleNewContactChange(field, e.target.value)}
-          />
-        ))}
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded"
-          onClick={createContactInfo}
-        >
-          Add Contact Info
-        </button>
-      </div>
-      {contactInfos.map((contact) => (
-        <div key={contact._id} className="border-t pt-4 mb-4">
-          {editingContactId === contact._id ? (
-            <>
-              {['email', 'mobile', 'timings'].map((field) => (
-                <div key={field} className="mb-2">
-                  <label className="font-semibold">{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
+        return (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
+            <button
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mb-4"
+              onClick={() => setShowContactForm(!showContactForm)}
+            >
+              {showContactForm ? 'View Contact Info' : 'Add New Contact Info'}
+            </button>
+      
+            {showContactForm ? (
+              <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <h3 className="text-xl font-semibold mb-4">Add New Contact Info</h3>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactEmail">
+                    Email
+                  </label>
                   <input
-                    type="text"
-                    className="border rounded p-2 ml-2"
-                    value={contact[field]}
-                    onChange={(e) => handleContactChange(contact._id, field, e.target.value)}
+                    id="contactEmail"
+                    type="email"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter email"
+                    value={newContactInfo.email}
+                    onChange={(e) => handleNewContactChange('email', e.target.value)}
                   />
                 </div>
-              ))}
-              <button
-                className="bg-green-500 text-white px-2 py-1 rounded mr-2"
-                onClick={() => saveContactInfo(contact._id)}
-              >
-                Save
-              </button>
-              <button
-                className="bg-gray-500 text-white px-2 py-1 rounded"
-                onClick={cancelEditingContact}
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              {['email', 'mobile', 'timings'].map((field) => (
-                <p key={field}><span className="font-semibold">{field.charAt(0).toUpperCase() + field.slice(1)}:</span> {contact[field]}</p>
-              ))}
-              <div className="mt-2">
-                <button
-                  className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
-                  onClick={() => startEditingContact(contact._id)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                  onClick={() => deleteContactInfo(contact._id)}
-                >
-                  Delete
-                </button>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactMobile">
+                    Mobile
+                  </label>
+                  <input
+                    id="contactMobile"
+                    type="tel"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter mobile number"
+                    value={newContactInfo.mobile}
+                    onChange={(e) => handleNewContactChange('mobile', e.target.value)}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactTimings">
+                    Timings
+                  </label>
+                  <input
+                    id="contactTimings"
+                    type="text"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Enter timings"
+                    value={newContactInfo.timings}
+                    onChange={(e) => handleNewContactChange('timings', e.target.value)}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => {
+                      createContactInfo();
+                      setShowContactForm(false);
+                    }}
+                  >
+                    Add Contact Info
+                  </button>
+                  <button
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => setShowContactForm(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </>
-          )}
-        </div>
-      ))}
-    </div>
-  );
+            ) : (
+              <div>
+                {contactInfos.map((contact) => (
+                  <div key={contact._id} className="border-t pt-4 mb-4">
+                    {editingContactId === contact._id ? (
+                      <>
+                        {['email', 'mobile', 'timings'].map((field) => (
+                          <div key={field} className="mb-2">
+                            <label className="font-semibold">{field.charAt(0).toUpperCase() + field.slice(1)}:</label>
+                            <input
+                              type="text"
+                              className="border rounded p-2 ml-2"
+                              value={contact[field]}
+                              onChange={(e) => handleContactChange(contact._id, field, e.target.value)}
+                            />
+                          </div>
+                        ))}
+                        <button
+                          className="bg-green-500 text-white px-2 py-1 rounded mr-2"
+                          onClick={() => saveContactInfo(contact._id)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="bg-gray-500 text-white px-2 py-1 rounded"
+                          onClick={cancelEditingContact}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {['email', 'mobile', 'timings'].map((field) => (
+                          <p key={field}><span className="font-semibold">{field.charAt(0).toUpperCase() + field.slice(1)}:</span> {contact[field]}</p>
+                        ))}
+                        <div className="mt-2">
+                          <button
+                            className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+                            onClick={() => startEditingContact(contact._id)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="bg-red-500 text-white px-2 py-1 rounded"
+                            onClick={() => deleteContactInfo(contact._id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
           case 'Announcements':
           return (
             <div className="bg-white shadow-lg rounded-lg p-6">
@@ -783,9 +884,9 @@ export default function Dash() {
         </div>
       </div>
 
-      <footer className="bg-gray-200 p-4">
-        <div className="container mx-auto text-center text-gray-600">
-          © 2024 DarshanEase, Inc
+      <footer className="bg-gray-800 text-white py-4">
+        <div className="container mx-auto text-center">
+          <p>&copy; 2023 Darshan Ease. All rights reserved.</p>
         </div>
       </footer>
     </div>
