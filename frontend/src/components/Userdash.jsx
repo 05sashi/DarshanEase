@@ -6,7 +6,7 @@ const API_URL = 'http://localhost:5500';
 
 export default function Userdash() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('Sashi');
+  const [userName, setUserName] = useState('User');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [services, setServices] = useState([]);
   const [selectedTemple, setSelectedTemple] = useState(null);

@@ -11,6 +11,10 @@ export default function () {
   const [users, setUsers] = useState([]);
   const [templeReps, setTempleReps] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [editingTemplerep, setEditingTemplerep] = useState(null);
+  const capitalizeTName = (name) => {
+    return name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -71,6 +75,43 @@ export default function () {
     }
   };
   
+  const handleRemoveTemplerep = async (templerepId) => {
+    const confirmDelete = window.confirm('Are you sure you want to remove this temple representative?');
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await axios.delete(`${API_URL}/templereps/${templerepId}`);
+      if (response.data.message === 'Temple representative deleted successfully') {
+        setTempleReps(templeReps.filter(rep => rep._id !== templerepId));
+        alert('Temple representative removed successfully');
+      } else {
+        alert('Failed to remove temple representative: ' + response.data.message);
+      }
+    } catch (error) {
+      console.error('Error removing temple representative:', error);
+      alert('Error removing temple representative: ' + (error.response?.data?.message || error.message));
+    }
+  };
+  
+  const handleUpdateTemplerep = async (templerep) => {
+    try {
+      const updatedTemplerep = {
+        ...templerep,
+        tname: capitalizeTName(templerep.tname)
+      };
+      const response = await axios.put(`${API_URL}/templereps/${templerep._id}`, updatedTemplerep);
+      if (response.data.message === 'Temple representative updated successfully') {
+        setTempleReps(templeReps.map(rep => rep._id === templerep._id ? response.data.templerep : rep));
+        setEditingTemplerep(null);
+        alert('Temple representative updated successfully');
+      } else {
+        alert('Failed to update temple representative: ' + response.data.message);
+      }
+    } catch (error) {
+      console.error('Error updating temple representative:', error);
+      alert('Error updating temple representative: ' + (error.response?.data?.message || error.message));
+    }
+  };
 
 
   const toggleDropdown = () => {
@@ -206,32 +247,106 @@ export default function () {
           </table>
         </div>
         <h2 className="text-2xl font-bold mb-4">Temple Representatives</h2>
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="min-w-full">
-            <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">Name</th>
-                <th className="py-3 px-6 text-left">Email</th>
-                <th className="py-3 px-6 text-left">Mobile</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm font-light">
-              {templeReps.map((rep) => (
-                <tr key={rep._id} className="border-b border-gray-200 hover:bg-gray-100">
-                  <td className="py-3 px-6 text-left whitespace-nowrap">
-                    {rep.name}
-                  </td>
-                  <td className="py-3 px-6 text-left">
-                    {rep.email}
-                  </td>
-                  <td className="py-3 px-6 text-left">
-                    {rep.mobile}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+<div className="bg-white shadow-md rounded-lg overflow-hidden">
+  <table className="min-w-full">
+    <thead>
+      <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+        <th className="py-3 px-6 text-left">Name</th>
+        <th className="py-3 px-6 text-left">Email</th>
+        <th className="py-3 px-6 text-left">Mobile</th>
+        <th className="py-3 px-6 text-left">Temple Name</th>
+        <th className="py-3 px-6 text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-600 text-sm font-light">
+      {templeReps.map((rep) => (
+        <tr key={rep._id} className="border-b border-gray-200 hover:bg-gray-100">
+          <td className="py-3 px-6 text-left whitespace-nowrap">
+            {editingTemplerep && editingTemplerep._id === rep._id ? (
+              <input
+                type="text"
+                value={editingTemplerep.name}
+                onChange={(e) => setEditingTemplerep({...editingTemplerep, name: e.target.value})}
+                className="border rounded px-2 py-1"
+              />
+            ) : (
+              rep.name
+            )}
+          </td>
+          <td className="py-3 px-6 text-left">
+            {editingTemplerep && editingTemplerep._id === rep._id ? (
+              <input
+                type="email"
+                value={editingTemplerep.email}
+                onChange={(e) => setEditingTemplerep({...editingTemplerep, email: e.target.value})}
+                className="border rounded px-2 py-1"
+              />
+            ) : (
+              rep.email
+            )}
+          </td>
+          <td className="py-3 px-6 text-left">
+            {editingTemplerep && editingTemplerep._id === rep._id ? (
+              <input
+                type="text"
+                value={editingTemplerep.mobile}
+                onChange={(e) => setEditingTemplerep({...editingTemplerep, mobile: e.target.value})}
+                className="border rounded px-2 py-1"
+              />
+            ) : (
+              rep.mobile
+            )}
+          </td>
+          <td className="py-3 px-6 text-left">
+  {editingTemplerep && editingTemplerep._id === rep._id ? (
+    <input
+      type="text"
+      value={editingTemplerep.tname}
+      onChange={(e) => setEditingTemplerep({...editingTemplerep, tname: e.target.value})}
+      className="border rounded px-2 py-1"
+    />
+  ) : (
+    capitalizeTName(rep.tname)
+  )}
+</td>
+          <td className="py-3 px-6 text-center">
+            {editingTemplerep && editingTemplerep._id === rep._id ? (
+              <>
+                <button
+                  onClick={() => handleUpdateTemplerep(editingTemplerep)}
+                  className="bg-green-500 text-white px-3 py-1 rounded mr-2"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setEditingTemplerep(null)}
+                  className="bg-gray-500 text-white px-3 py-1 rounded"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => setEditingTemplerep(rep)}
+                  className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleRemoveTemplerep(rep._id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Remove
+                </button>
+              </>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
       </main>
       <footer className="bg-gray-800 text-white py-4">
         <div className="container mx-auto text-center">
