@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../App.css";
 import axios from 'axios';
@@ -6,38 +6,26 @@ import { Dropdown } from 'react-bootstrap';
 import { FaUserCircle, FaLock, FaBolt, FaSmile, FaShieldAlt } from 'react-icons/fa';
 
 export default function Login() {
-  const [admins, setAdmins] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchAdmins();
-  }, []);
-
-  const fetchAdmins = async () => {
-    try {
-      const response = await axios.get('http://localhost:5500/admins');
-      setAdmins(response.data);
-    } catch (error) {
-      console.error("Error fetching admin data:", error);
-    }
-  };
-
-  const checkAdminEmail = () => {
-    return admins.some(admin => admin.email === email);
-  };
-
-  const checkAdminPass = () => {
-    return admins.some(admin => admin.password === password);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (checkAdminEmail() && checkAdminPass()) {
-      alert("Valid Credentials");
-    } else {
-      alert("Once check your credentials");
+    try {
+      const response = await axios.post('http://localhost:5500/admin/login', { email, password });
+      if (response.data.message === 'Login successful') {
+        localStorage.setItem('adminName', response.data.admin.name);
+        localStorage.setItem('adminId', response.data.admin.id);
+        alert("Login successful");
+        navigate('/admin-dashboard'); // Assuming you have an admin dashboard route
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert("Invalid credentials. Please check your email and password.");
+      } else {
+        alert("An error occurred. Please try again later.");
+      }
     }
   };
 
@@ -125,14 +113,13 @@ export default function Login() {
                 </div>
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-500">
-                    Not a user? <a href="#" onClick={switchToSignup} className="text-orange-500 hover:text-orange-400">Sign up</a> to login.
+                    Not an admin? <a href="#" onClick={switchToSignup} className="text-orange-500 hover:text-orange-400">Sign up</a> to login.
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <div className="py-16 bg-gray-800">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

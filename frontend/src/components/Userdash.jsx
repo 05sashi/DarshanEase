@@ -72,7 +72,7 @@ const fetchContactInfos = async () => {
   }, [selectedTemple]);
   const renderContactInfo = () => (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
+      <h2 className="text-2xl font-bold mb-4 flex justify-center">Contact Information</h2>
       {contactInfos.map(contact => (
         <div key={contact._id} className="mb-4 p-4 border rounded bg-white">
           <p><strong>Email:</strong> {contact.email}</p>
@@ -182,13 +182,15 @@ const fetchContactInfos = async () => {
 
   const renderTempleServices = () => (
     <div>
-      <h2 className="text-2xl font-bold mb-4">{selectedTemple} Services</h2>
+    <div className="flex justify-end">
       <button 
         className="mb-4 bg-orange-500 text-white px-4 py-2 rounded"
         onClick={() => setSelectedTemple(null)}
       >
         Back to Temples
       </button>
+      </div>
+      <h2 className="text-2xl font-bold mb-4 flex justify-center">{selectedTemple} Services</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {services.map((service) => (
           <div key={service._id} className="bg-white shadow-lg rounded-lg overflow-hidden p-4">
@@ -246,7 +248,7 @@ const fetchContactInfos = async () => {
 
   const renderDonations = () => (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4">Donations</h2>
+      <h2 className="text-2xl font-bold mb-4 flex justify-center">Donations</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {donations.map((donation) => (
           <div key={donation._id} className="bg-white shadow-lg rounded-lg overflow-hidden p-4">
@@ -266,7 +268,7 @@ const fetchContactInfos = async () => {
 
   const renderAnnouncements = () => (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4">Announcements</h2>
+      <h2 className="text-2xl font-bold mb-4 flex justify-center">Announcements</h2>
       {announcements.map(announcement => (
         <div key={announcement._id} className="mb-4 p-4 border rounded bg-white">
           <h3 className="font-bold">{announcement.name}</h3>
