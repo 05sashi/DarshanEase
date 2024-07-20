@@ -251,16 +251,28 @@ export default function () {
   <table className="min-w-full">
     <thead>
       <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+        <th className="py-3 px-6 text-left">Temple Name</th>
         <th className="py-3 px-6 text-left">Name</th>
         <th className="py-3 px-6 text-left">Email</th>
         <th className="py-3 px-6 text-left">Mobile</th>
-        <th className="py-3 px-6 text-left">Temple Name</th>
         <th className="py-3 px-6 text-center">Actions</th>
       </tr>
     </thead>
     <tbody className="text-gray-600 text-sm font-light">
       {templeReps.map((rep) => (
         <tr key={rep._id} className="border-b border-gray-200 hover:bg-gray-100">
+          <td className="py-3 px-6 text-left">
+  {editingTemplerep && editingTemplerep._id === rep._id ? (
+    <input
+      type="text"
+      value={editingTemplerep.tname}
+      onChange={(e) => setEditingTemplerep({...editingTemplerep, tname: e.target.value})}
+      className="border rounded px-2 py-1"
+    />
+  ) : (
+    capitalizeTName(rep.tname)
+  )}
+</td>
           <td className="py-3 px-6 text-left whitespace-nowrap">
             {editingTemplerep && editingTemplerep._id === rep._id ? (
               <input
@@ -297,18 +309,7 @@ export default function () {
               rep.mobile
             )}
           </td>
-          <td className="py-3 px-6 text-left">
-  {editingTemplerep && editingTemplerep._id === rep._id ? (
-    <input
-      type="text"
-      value={editingTemplerep.tname}
-      onChange={(e) => setEditingTemplerep({...editingTemplerep, tname: e.target.value})}
-      className="border rounded px-2 py-1"
-    />
-  ) : (
-    capitalizeTName(rep.tname)
-  )}
-</td>
+          
           <td className="py-3 px-6 text-center">
             {editingTemplerep && editingTemplerep._id === rep._id ? (
               <>

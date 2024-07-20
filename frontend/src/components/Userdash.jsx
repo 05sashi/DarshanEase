@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jsPDF } from "jspdf";
 
 const API_URL = 'http://localhost:5500';
+const DEFAULT_USERNAME = 'Sashi';
 
 export default function Userdash() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('User');
+  const [userName, setUserName] = useState('Sashi');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [services, setServices] = useState([]);
   const [selectedTemple, setSelectedTemple] = useState(null);
@@ -14,6 +16,65 @@ export default function Userdash() {
   const [donations, setDonations] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [contactInfos, setContactInfos] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  useEffect(() => {
+    fetchUserName();
+  }, []);
+
+  const fetchUserName = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/users`);
+      setUserName(response.data.name); // Assuming the API returns an object with a 'name' property
+    } catch (error) {
+      console.error('Error fetching user name:', error);
+    }
+  };
+  const handleItemSelection = (index) => {
+    setSelectedItems(prevItems => {
+      if (prevItems.includes(index)) {
+        return prevItems.filter(item => item !== index);
+      } else {
+        return [...prevItems, index];
+      }
+    });
+  };
+
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      alert("Please select items to checkout.");
+      return;
+    }
+
+    const doc = new jsPDF();
+    doc.setFontSize(30);
+    doc.text("Darshan Ease",70,20);
+
+    doc.setFontSize(18);
+    doc.text("Booking Confirmation", 20, 30);
+    
+    doc.setFontSize(12);
+    doc.text(`User Name: ${DEFAULT_USERNAME}`, 20, 40);
+    doc.text("Booked Services:", 20, 50);
+
+    let yOffset = 60;
+    selectedItems.forEach((index) => {
+      const item = cart[index];
+      doc.text(`- ${item.service} (${item.temple}) - ₹${item.price}`, 30, yOffset);
+      yOffset += 10;
+    });
+
+    const total = selectedItems.reduce((sum, index) => sum + cart[index].price, 0);
+    doc.text(`Total: ₹${total}`, 20, yOffset + 10);
+
+    doc.save("booking_confirmation.pdf");
+
+    // Clear selected items from cart
+    const newCart = cart.filter((_, index) => !selectedItems.includes(index));
+    setCart(newCart);
+    setSelectedItems([]);
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    alert("Checkout successful! Your booking confirmation has been downloaded.");
+  };
 
 const fetchContactInfos = async () => {
   try {
@@ -176,6 +237,133 @@ const fetchContactInfos = async () => {
             </p>
           </div>
         </div>
+        <div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Yadhadri')}
+        >
+          <img 
+            src="/pictures/Yadhadhri.jpg" 
+            alt="Yadhadri Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Yadhadri</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Yadhadri Temple.
+            </p>
+          </div>
+        </div>
+
+
+
+<div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Kanchipuram')}
+        >
+          <img 
+            src="/pictures/Kanchipuram.jpeg" 
+            alt="Kanchipuram Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Kanchipuram</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Kanchipuram Temple.
+            </p>
+          </div>
+        </div>
+
+
+<div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Thiruvananthapuram')}
+        >
+          <img 
+            src="/pictures/Thiruvananthapuram.jpeg" 
+            alt="Thiruvananthapuram Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Thiruvananthapuram</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Thiruvananthapuram Temple.
+            </p>
+          </div>
+        </div>
+
+
+
+
+
+
+<div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Kedarnath')}
+        >
+          <img 
+            src="/pictures/Kedarnath.jpeg" 
+            alt="Kedarnath Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Kedarnath</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Kedarnath Temple.
+            </p>
+          </div>
+        </div>
+
+<div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Badrinath')}
+        >
+          <img 
+            src="/pictures/Badrinath.jpeg" 
+            alt="Badrinath Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Badrinath</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Badrinath Temple.
+            </p>
+          </div>
+        </div>
+
+<div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Varanasi')}
+        >
+          <img 
+            src="/pictures/Varanasi.jpg" 
+            alt="Varanasi Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Varanasi</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Varanasi Temple.
+            </p>
+          </div>
+        </div>
+        <div 
+          className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer"
+          onClick={() => handleTempleClick('Chickmangalur')}
+        >
+          <img 
+            src="/pictures/Chickmangalur.jpeg" 
+            alt="Chickmangalur Temple" 
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="font-bold text-xl mb-2">Chickmangalur</h3>
+            <p className="text-gray-700 text-base">
+              Click to view services and make bookings for Chickmangalur Temple.
+            </p>
+          </div>
+        </div>
+
+
       </div>
     </div>
   );
@@ -225,10 +413,18 @@ const fetchContactInfos = async () => {
         <div>
           {cart.map((item, index) => (
             <div key={index} className="bg-white shadow-lg rounded-lg overflow-hidden p-4 mb-4 flex justify-between items-center">
-              <div>
-                <h3 className="font-bold">{item.service}</h3>
-                <p className="text-sm">Temple: {item.temple}</p>
-                <p className="text-sm">Price: ₹{item.price}</p>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(index)}
+                  onChange={() => handleItemSelection(index)}
+                  className="mr-4"
+                />
+                <div>
+                  <h3 className="font-bold">{item.service}</h3>
+                  <p className="text-sm">Temple: {item.temple}</p>
+                  <p className="text-sm">Price: ₹{item.price}</p>
+                </div>
               </div>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded"
@@ -240,6 +436,12 @@ const fetchContactInfos = async () => {
           ))}
           <div className="mt-4">
             <p className="font-bold">Total: ₹{cart.reduce((total, item) => total + item.price, 0)}</p>
+            <button
+              className="mt-4 bg-green-500 text-white px-4 py-2 rounded w-full"
+              onClick={handleCheckout}
+            >
+              Checkout Selected Items
+            </button>
           </div>
         </div>
       )}
@@ -306,12 +508,12 @@ const fetchContactInfos = async () => {
               Cart
             </button>
             <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="bg-white text-orange-500 font-bold py-2 px-4 rounded"
-              >
-                {userName}
-              </button>
+            <button
+  onClick={toggleDropdown}
+  className="bg-white text-orange-500 font-bold py-2 px-4 rounded"
+>
+  {DEFAULT_USERNAME}
+</button>
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
                   <button

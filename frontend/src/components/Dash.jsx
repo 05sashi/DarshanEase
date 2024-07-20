@@ -578,28 +578,6 @@ export default function Dash() {
       </div>
     </div>
   );
-        case 'Visitors Stats':
-        return (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Visitor Statistics</h2>
-            <div className="bg-white shadow-md rounded-lg p-6">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <p className="text-4xl font-bold text-orange-600">500</p>
-                  <p className="text-gray-600">Website Views</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold text-orange-600">200</p>
-                  <p className="text-gray-600">Temple Registrations</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold text-orange-600">150</p>
-                  <p className="text-gray-600">Temple Donations</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
         case 'Contact info':
         return (
           <div className="bg-white shadow-lg rounded-lg p-6">
@@ -829,7 +807,7 @@ export default function Dash() {
         <div className="w-[250px] bg-gray-100 p-4">
           <nav>
             <ul className="space-y-2">
-              {['Dashboard', 'Services', 'Donations', 'Visitors Stats', 'Announcements', 'Contact info'].map((item) => (
+              {['Dashboard', 'Services', 'Donations', 'Announcements', 'Contact info'].map((item) => (
                 <li 
                   key={item} 
                   className={`flex items-center cursor-pointer p-2 rounded ${activeSection === item ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-orange-100'}`}
